@@ -26,10 +26,9 @@ end
 function EventDispatcher:dispatchEvent(eventName, data)
     local eventDic = self.handlerDic[eventName]
     if eventDic == nil then return end
-    if eventDic:triggerEvent(eventName, data, self.eventTarget) == false then
-        if eventDic:hasEventHandler() == false then
-            self.handlerDic[eventName] = nil
-        end
+    eventDic:triggerEvent(eventName, data, self.eventTarget)
+    if eventDic:hasEventHandler() == false then
+        self.handlerDic[eventName] = nil
     end
 end
 

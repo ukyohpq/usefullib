@@ -68,11 +68,9 @@ function EventPriorityMap:triggerEvent(eventName, data, eventTarget)
         local priorityList = self.map[priority]
         if priorityList ~= nil then
             for _, callbackHandler in ipairs(priorityList) do
-                local ret = callbackHandler:call(EventData.new(eventTarget, data))
-                if ret == false then
+                if callbackHandler:call(EventData.new(eventTarget, data)) == false then
                     self:removeEventHandler(nil, callbackHandler.caller, priority, callbackHandler.useWeekReference)
                 end
-                return ret
             end
         end
     end

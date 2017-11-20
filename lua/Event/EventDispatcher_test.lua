@@ -92,7 +92,29 @@ local function priorityTest()
     end
 end
 
+local function removeTest()
+    local ret = true
+    local testFun = function()
+        local dispatcher = EventDispatcher.new()
+        local b = {}
+        b.func = function(self, eventData)
+            ret = false
+        end
+        dispatcher:addEventListener("evt", b.func, b, 0, false)
+        dispatcher:removeEventListener("evt", b.func, b, 0, false)
+        dispatcher:dispatchEvent("evt", 10)
+    end
+    testFun()
+    if ret then
+        print("removeTest success")
+    else
+        print("removeTest failed")
+    end
+end
+
+
 withOutCallerTest()
 withCallerTest()
 weekReferenceTest()
 priorityTest()
+removeTest()

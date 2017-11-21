@@ -7,7 +7,7 @@ require("class")
 local EventDispatcher= require("Event.EventDispatcher")
 
 
-local function withOutCallerTest()
+local function testWithOutCaller()
     local ret = false
     local testFun = function()
         local dispatcher = EventDispatcher.new()
@@ -19,13 +19,13 @@ local function withOutCallerTest()
     end
     testFun()
     if ret then
-        print("withOutCallerTest success")
+        print("testWithOutCaller success")
     else
-        print("withOutCallerTest failed")
+        print("testWithOutCaller failed")
     end
 end
 
-local function withCallerTest()
+local function testWithCaller()
     local ret = false
     local testFun = function()
         local dispatcher = EventDispatcher.new()
@@ -38,13 +38,13 @@ local function withCallerTest()
     end
     testFun()
     if ret then
-        print("withCallerTest success")
+        print("testWithCaller success")
     else
-        print("withCallerTest failed")
+        print("testWithCaller failed")
     end
 end
 
-local function weekReferenceTest()
+local function testWeekReference()
     local ret = true
     local testFun = function()
         local dispatcher = EventDispatcher.new()
@@ -62,13 +62,13 @@ local function weekReferenceTest()
     end
     testFun()
     if ret then
-        print("weekReferenceTest success")
+        print("testWeekReference success")
     else
-        print("weekReferenceTest failed")
+        print("testWeekReference failed")
     end
 end
 
-local function priorityTest()
+local function testPriority()
     local rets = {}
     local testFun = function()
         local dispatcher = EventDispatcher.new()
@@ -86,13 +86,13 @@ local function priorityTest()
     end
     testFun()
     if rets[1] == 2 and rets[2] == 1 then
-        print("priorityTest success")
+        print("testPriority success")
     else
-        print("priorityTest failed")
+        print("testPriority failed")
     end
 end
 
-local function removeTest()
+local function testRemove()
     local ret = true
     local testFun = function()
         local dispatcher = EventDispatcher.new()
@@ -106,15 +106,15 @@ local function removeTest()
     end
     testFun()
     if ret then
-        print("removeTest success")
+        print("testRemove success")
     else
-        print("removeTest failed")
+        print("testRemove failed")
     end
 end
 
 
-withOutCallerTest()
-withCallerTest()
-weekReferenceTest()
-priorityTest()
-removeTest()
+testWithOutCaller()
+testWithCaller()
+testWeekReference()
+testPriority()
+testRemove()

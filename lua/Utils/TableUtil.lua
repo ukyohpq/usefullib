@@ -11,3 +11,11 @@ function table.removeElement(tb, ele)
         end
     end
 end
+
+function table.mapLen(tb)
+    local n = 0
+    for _, _ in pairs(tb) do
+        n = n + 1
+    end
+    return n
+end

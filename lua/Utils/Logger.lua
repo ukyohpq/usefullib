@@ -4,7 +4,10 @@
 ---
 local print = _G.print
 local function getStack()
-    return string.gsub(debug.traceback(), "(stack traceback:).+(in function 'logErr'\n)", "")
+    local stack = debug.traceback()
+    stack = string.gsub(stack,"(stack traceback:).+(in function 'logErr'\n)", "")
+    stack = string.gsub(stack,"([)C(]): in (?)", "")
+    return stack
 end
 
 local function getTrackString(...)
@@ -14,6 +17,7 @@ local function getTrackString(...)
     end
     s = s .. "\n"
     local stack = string.gsub(debug.traceback(), "(stack traceback:).+(in function 'logErr'\n)", "")
+    --stack = string.gsub(stack,"([)C(]): in (?)", "")
     s = s .. stack
     return s
 end

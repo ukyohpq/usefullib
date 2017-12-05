@@ -18,7 +18,7 @@ function clone(object)
     return _copy(object)
 end
 
-function is(ins, cls)
+local function is(ins, cls)
     if ins == nil then
         return false
     end
@@ -32,7 +32,9 @@ function is(ins, cls)
     end
 end
 
---Create a class.
+---Create a class
+---@param classname string @classname
+---@param super table @super
 function class(classname, super)
     local superType = type(super)
     local cls
@@ -71,14 +73,8 @@ function class(classname, super)
     else
         -- inherited from Lua Object
         if super then
-            if Reflect[super.__cname] == super then
-            -- inherited from Lua class
-                cls = {}
-                setmetatable(cls, super)
-            else
-            -- inherited from Lua table
-                cls = clone(super)
-            end
+            cls = {}
+            cls = clone(super)
             cls.super = super
         else
             cls = {ctor = function() end}

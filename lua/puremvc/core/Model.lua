@@ -1,14 +1,27 @@
-local super = Singleton
 ---@class Model:Singleton
 ---@field proxyMap table<string, Proxy>
-Model = class("puremvc.core.Model",  super)
+Model = class("puremvc.core.Model")
+
+local SINGLETON_MSG = "Model Singleton already constructed!"
+
+---@type Model
+local instance
+
+function Model.getInstance()
+	if instance == nil then
+		instance = Model.new()
+	end
+	return instance
+end
 
 function Model:initializeModel()
     
 end
 
 function Model:ctor()
-	super.ctor(self)
+	if instance ~= nil then
+		error(SINGLETON_MSG)
+	end
 	self.proxyMap = {}
 	self:initializeModel(self)
 end

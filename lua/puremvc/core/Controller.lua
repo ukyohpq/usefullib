@@ -1,15 +1,27 @@
-local super = Singleton
----@class Controller:Singleton
+---@class Controller
 ---@field view View
 ---@field commandMap table<string, SimpleCommand>
-Controller = class("puremvc.core.Controller", super)
+Controller = class("puremvc.core.Controller")
+
+local SINGLETON_MSG = "Controller Singleton already constructed!"
+---@type Controller
+local instance
+
+function Controller.getInstance()
+	if instance == nil then
+		instance = Controller.new()
+	end
+	return instance
+end
 
 function Controller:initializeController()
     self.view = View:getInstance()
 end
 
 function Controller:ctor()
-	super.ctor(self)
+	if instance ~= nil then
+		error(SINGLETON_MSG)
+	end
 	self.commandMap = {}
 	self:initializeController()
 end

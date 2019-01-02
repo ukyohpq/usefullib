@@ -1,4 +1,3 @@
-require("Utils.Singleton")
 require("puremvc.core.Model")
 require("puremvc.core.Controller")
 require("puremvc.core.View")
@@ -11,22 +10,33 @@ local super = Singleton
 ---@field private view View
 Facade = class("src.puremvc.patterns.facade.Facade", super)
 
+local SINGLETON_MSG = "Facade Singleton already constructed!"
+
+---@type Facade
+local instance
+---@return Facade
+function Facade.getInstance()
+    if instance == nil then
+        instance = Facade.new()
+    end
+    return instance
+end
 
 function Facade:initializeModel()
     if self.model == nil then
-        self.model = Model:getInstance()
+        self.model = Model.getInstance()
     end
 end
 
 function Facade:initializeController()
     if self.controller == nil then
-        self.controller = Controller:getInstance()
+        self.controller = Controller.getInstance()
     end
 end
 
 function Facade:initializeView()
     if self.view == nil then
-        self.view = View:getInstance()
+        self.view = View.getInstance()
     end
 end
 
@@ -37,7 +47,9 @@ function Facade:initializeFacade()
 end
 
 function Facade:ctor()
-    super.ctor(self)
+    if instance ~= nil then
+        error(SINGLETON_MSG)
+    end
 	self:initializeFacade()
 end
 
@@ -84,7 +96,10 @@ function Facade:retrieveMediator(mediatorName)
 end
 
 
+---removeMediator
+---@param mediatorName string
 function Facade:removeMediator(mediatorName)
+    ---@type Mediator
     local mediator
     if self.view ~= nil then 
         mediator = self.view:removeMediator(mediatorName)
@@ -104,11 +119,6 @@ function Facade:notifyObservers(notification)
 	if self.view ~= nil then
 	   self.view:notifyObservers(notification)
 	end
-end
-
----@return Facade
-function Facade:getInstance()
-    return super.getInstance(self)
 end
 
 return Facade

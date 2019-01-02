@@ -1,14 +1,27 @@
-local super = Singleton
----@class View:Singleton
+---@class View
 ---@field mediatorMap table<string, Mediator>
-View = class("puremvc.core.View", super)
+View = class("puremvc.core.View")
+
+local SINGLETON_MSG = "View Singleton already constructed!"
+
+---@type View
+local instance
+
+function View.getInstance()
+	if instance == nil then
+		instance = View.new()
+	end
+	return instance
+end
 
 function View:initializeView()
     
 end
 
 function View:ctor()
-	super.ctor(self)
+	if instance ~= nil then
+		error(SINGLETON_MSG)
+	end
 	self.mediatorMap = {}
 	self.observerMap = {}
 	self:initializeView()

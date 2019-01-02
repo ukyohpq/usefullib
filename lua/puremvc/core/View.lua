@@ -1,51 +1,34 @@
-local View = class("puremvc.core.View")
-local private = {}
-local instance
-local SINGLETON_MSG = "View Singleton already constructed!"
+local super = Singleton
+---@class View:Singleton
+---@field mediatorMap table<string, Mediator>
+View = class("puremvc.core.View", super)
 
-local function initializeView(self)
+function View:initializeView()
     
 end
----------------------------
---@param
---@return
+
 function View:ctor()
-	if instance ~= nil then
-	   error(SINGLETON_MSG)
-	end
-	instance = self
-	self[private] = {
-	   _mediatorMap = {},
-	   _observerMap = {}
-	}
-	initializeView(self)
+	super.ctor(self)
+	self.mediatorMap = {}
+	self.observerMap = {}
+	self:initializeView()
 end
 
-
----------------------------
---@param
---@return
-function View.getInstance()
-	instance = instance or View.new()
-	return instance
-end
-
+---registerObserver
+---@param notificationName string
+---@param observer Observer
 function View:registerObserver(notificationName, observer)
-    local observers = self[private]._observerMap[notificationName]
+    local observers = self.observerMap[notificationName]
     if observers ~= nil then
         observers[#observers] = observer
     else
-        self[private]._observerMap[notificationName] = {observer}
+        self.observerMap[notificationName] = {observer}
     end
 end
 
-
----------------------------
---@param
---@return
 function View:notifyObservers(notification)
-	if self[private]._observerMap[notification:getName()] ~= nil then
-	   local observers_ref = self[private]._observerMap[notification:getName()]
+	if self.observerMap[notification:getName()] ~= nil then
+	   local observers_ref = self.observerMap[notification:getName()]
 	   --把observers从原始数组拷贝到工作数组中
 	   --如果不这么做的话，原始数组可能在消息循环进行时发生改变
 	   local observers = {}
@@ -62,12 +45,8 @@ function View:notifyObservers(notification)
 	end
 end
 
-
----------------------------
---@param
---@return
 function View:removeObserver(notificationName, notifyContext)
-	local observers = self[private]._observerMap[notificationName]
+	local observers = self.observerMap[notificationName]
 	for i=1, #observers do
 		if observers[i]:compareNotifyContext(notifyContext) then
 		  table.remove(observers,i)
@@ -76,17 +55,13 @@ function View:removeObserver(notificationName, notifyContext)
 	end
 	
 	if #observers == 0 then
-	   self[private]._observerMap[notificationName] = nil 
+	   self.observerMap[notificationName] = nil 
 	end
 end
 
-
----------------------------
---@param
---@return
 function View:registerMediator(mediator)
-    if self[private]._mediatorMap[mediator:getMediatorName()] ~= nil then return end
-    self[private]._mediatorMap[mediator:getMediatorName()] = mediator
+    if self.mediatorMap[mediator:getMediatorName()] ~= nil then return end
+    self.mediatorMap[mediator:getMediatorName()] = mediator
     local interests = mediator:listNotificationInterests()
     if #interests > 0 then
        local observer = require("puremvc.patterns.observer.Observer").new(mediator.handleNotification, mediator)
@@ -97,36 +72,25 @@ function View:registerMediator(mediator)
     mediator:onRegister()
 end
 
-
----------------------------
---@param
---@return
-function View:retireveMediator(mediatorName)
-	return self[private]._mediatorMap[mediatorName]
+function View:retrieveMediator(mediatorName)
+	return self.mediatorMap[mediatorName]
 end
 
----------------------------
---@param
---@return
 function View:removeMediator(mediatorName)
-	local mediator = self[private]._mediatorMap[mediatorName]
+	local mediator = self.mediatorMap[mediatorName]
 	if mediator ~= nil then
 	   local interests = mediator:listNotificationInterests()
 	   for i=1, #interests do
 	   	self:removeObserver(interests[i], mediator)
-	   	self[private]._mediatorMap[mediatorName] = nil
+	   	self.mediatorMap[mediatorName] = nil
 	   end
 	   mediator:onRemove()
 	end
 	return mediator
 end
 
-
----------------------------
---@param
---@return
 function View:hasMediator(mediatorName)
-	return self[private]._mediatorMap[mediatorName] ~= nil
+	return self.mediatorMap[mediatorName] ~= nil
 end
 
 return View

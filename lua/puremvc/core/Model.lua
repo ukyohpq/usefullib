@@ -1,70 +1,46 @@
-local Model = class("puremvc.core.Model")
-local private = {}
-local instance
-local SINGLETON_MSG = "Model Singleton already constructed!"
+local super = Singleton
+---@class Model:Singleton
+---@field proxyMap table<string, Proxy>
+Model = class("puremvc.core.Model",  super)
 
-local function initializeModel(self)
+function Model:initializeModel()
     
 end
----------------------------
---@param
---@return
+
 function Model:ctor()
-	if instance ~= nil then
-	   error(SINGLETON_MSG)
-	end
-	instance = self
-	self[private] = {
-	   _proxyMap = {}
-	}
-	
-	initializeModel(self)
+	super.ctor(self)
+	self.proxyMap = {}
+	self:initializeModel(self)
 end
 
-
----------------------------
---@param
---@return
-function Model.getInstance()
-	instance = instance or Model.new()
-	return instance
-end
-
-
----------------------------
---@param
---@return
+---registerProxy
+---@param proxy Proxy
 function Model:registerProxy(proxy)
-	self[private]._proxyMap[proxy:getProxyName()] = proxy
+	self.proxyMap[proxy:getProxyName()] = proxy
 	proxy:onRegister()
 end
 
-
----------------------------
---@param
---@return
+---retrieveProxy
+---@param proxyName string
 function Model:retrieveProxy(proxyName)
-	return self[private]._proxyMap[proxyName]
+	return self.proxyMap[proxyName]
 end
 
-
----------------------------
---@param
---@return
+---hasProxy
+---@param proxyName string
 function Model:hasProxy(proxyName)
-	return self[private]._proxyMap[proxyName]
+	return self.proxyMap[proxyName] ~= nil
 end
 
-
----------------------------
---@param
---@return
-function Model:removeProxy(proxyname)
-	local proxy = self[private]._proxyMap[proxyName]
+---removeProxy
+---@param proxyName string
+function Model:removeProxy(proxyName)
+	local proxy = self.proxyMap[proxyName]
 	if proxy ~= nil then
-	   self[private]._proxyMap[proxyName] = nil
+	   self.proxyMap[proxyName] = nil
 	   proxy:onRemove()
 	end
 	return proxy
 end
+
 return Model

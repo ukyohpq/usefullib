@@ -1,70 +1,50 @@
-local Controller = class("puremvc.core.Controller")
-local private = {}
-local instance
-local SINGLETON_MSG = "Controller Singleton already constructed!"
+local super = Singleton
+---@class Controller:Singleton
+---@field view View
+---@field commandMap table<string, SimpleCommand>
+Controller = class("puremvc.core.Controller", super)
 
-local function initializeController(self)
-    self[private]._view = require("puremvc.core.View").getInstance()
+function Controller:initializeController()
+    self.view = View:getInstance()
 end
 
----------------------------
---@param
---@return
 function Controller:ctor()
-	if instance ~= nil then error(SINGLETON_MSG) end
-	instance = self
-	self[private] = {
-	   _commandMap = {},
-	   _view = nil
-	}
-	
-	initializeController(self)
+	super.ctor(self)
+	self.commandMap = {}
+	self:initializeController()
 end
 
-
-function Controller.getInstance()
-    instance = instance or Controller.new()
-    return instance
-end
-
-
----------------------------
---@param
---@return
+---executeCommand
+---@param note Notification
 function Controller:executeCommand(note)
-	local commandClassRef = self[private]._commandMap[note:getName()]
+	local commandClassRef = self.commandMap[note:getName()]
 	if commandClassRef == nil then return end
-    local commandInstace = commandClassRef.new()
-    commandInstace:execute(note)
+    local commandInstance = commandClassRef.new()
+    commandInstance:execute(note)
 end
 
-
----------------------------
---@param
---@return
+---registerCommand
+---@param notificationName string
+---@param commandClassRef SimpleCommand
 function Controller:registerCommand(notificationName, commandClassRef)
-	if self[private]._commandMap[notificationName] == nil then
-	   self[private]._view:registerObserver(notificationName, require("puremvc.patterns.observer.Observer").new(self.executeCommand, self))
+	if self.commandMap[notificationName] == nil then
+	   self.view:registerObserver(notificationName, require("puremvc.patterns.observer.Observer").new(self.executeCommand, self))
 	end
-	self[private]._commandMap[notificationName] = commandClassRef
+	self.commandMap[notificationName] = commandClassRef
 end
 
-
----------------------------
---@param
---@return
+---hasCommand
+---@param notificationName string
 function Controller:hasCommand(notificationName)
-	return self[private]._commandMap[notificationName] ~= nil
+	return self.commandMap[notificationName] ~= nil
 end
 
-
----------------------------
---@param
---@return
+---removeCommand
+---@param notificationName string
 function Controller:removeCommand(notificationName)
 	if self:hasCommand(notificationName) then
-	   self[private]._view:removeObserver(notificationName, self)
-	   self[private]._commandMap[notificationName] = nil
+	   self.view:removeObserver(notificationName, self)
+	   self.commandMap[notificationName] = nil
 	end
 end
 

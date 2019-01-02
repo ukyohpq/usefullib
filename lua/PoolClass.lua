@@ -1,4 +1,4 @@
-require "System.class"
+require "class"
 
 ---
 -- 1.删除field的release方法，之前是用一个匿名tabel作为key，给每个ins在创建时添加上一个field，

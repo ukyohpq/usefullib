@@ -1,68 +1,38 @@
-local Observer = class("puremvc.patterns.observer.Observer")
+---@class Observer
+---@field notify fun(string, Notification):void
+---@field notifyContext string
+Observer = class("puremvc.patterns.observer.Observer")
 
-local private = {}
-
-
----------------------------
---@param
---@return
+---ctor
+---@param notifyMethod fun()
+---@param notifyContext table
 function Observer:ctor(notifyMethod, notifyContext)
-	self[private] = {
-	   _notify = nil,
-	   _context = nil
-	}
-	
 	self:setNotifyMethod(notifyMethod)
 	self:setNotifyContext(notifyContext)
 end
 
-
-
----------------------------
---@param
---@return
 function Observer:setNotifyMethod(notifyMethod)
-	self[private]._notify = notifyMethod
+	self.notify = notifyMethod
 end
 
-
----------------------------
---@param
---@return
 function Observer:setNotifyContext(notifyContext)
-	self[private]._context = notifyContext
+	self.context = notifyContext
 end
 
-
----------------------------
---@param
---@return
 function Observer:getNotifyMethod()
-	return self[private]._notify
+	return self.notify
 end
 
-
----------------------------
---@param
---@return
 function Observer:getNotifyContext()
-	return self[private]._context
+	return self.context
 end
 
-
----------------------------
---@param
---@return
 function Observer:notifyObserver(notification)
 	self:getNotifyMethod()(self:getNotifyContext(), notification)
 end
 
-
----------------------------
---@param
---@return
 function Observer:compareNotifyContext(object)
-	return object == self[private]._context
+	return object == self.context
 end
 
 return Observer

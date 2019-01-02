@@ -1,15 +1,15 @@
-local SimpleCommand = class("puremvc.patterns.command.SimpleCommand",require("puremvc.patterns.observer.Notifier"))
-local super = SimpleCommand.super
----------------------------
---@param
---@return
+local super= Notifier
+---@class SimpleCommand:Notifier
+SimpleCommand = class("puremvc.patterns.command.SimpleCommand", super)
+
 function SimpleCommand:ctor()
     super.ctor(self)
 end
----------------------------
---@param
---@return
+
+---execute
+---@param notification Notification
 function SimpleCommand:execute(notification)
 	
 end
+
 return SimpleCommand

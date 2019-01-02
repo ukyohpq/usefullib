@@ -1,28 +1,33 @@
 ---
---- Created by Administrator.
+--- Created by hepengqi.
 --- DateTime: 2017/11/16 23:53
 ---
-local print = _G.print
-local function getStack()
-    local stack = debug.traceback()
-    stack = string.gsub(stack,"(stack traceback:).+(in function 'logErr'\n)", "")
-    stack = string.gsub(stack,"([)C(]): in (?)", "")
-    return stack
-end
 
-local function getTrackString(...)
-    local s = ""
-    for _, v in ipairs({...}) do
-        s = s .. tostring(v) .. " "
+local function WriteF(fmt, ...)
+    local p = {...}
+    --默认第一个为nil的参数到最后一个参数之间的参数数量不会超过10个
+    local length = #p + 10
+    for i = 1, length do
+        local v = p[i]
+        if v == nil then
+            p[i] = "nil"
+        elseif type(v) ~= "number" then
+            p[i] = tostring(v)
+        end
+        p[i] = tostring(v)
     end
-    s = s .. "\n"
-    local stack = string.gsub(debug.traceback(), "(stack traceback:).+(in function 'logErr'\n)", "")
-    --stack = string.gsub(stack,"([)C(]): in (?)", "")
-    s = s .. stack
-    return s
+    return string.format(fmt, unpack(p))
 end
 
-function logErr(...)
-    local s = getTrackString(...)
-    print(s)
+function logDebug(fmtString,...)
+    Debugger.Log("{0} \n {1}", "[ " .. WriteF(fmtString, ...) .. " ]", debug.traceback())
+end
+
+function logWarning(fmtString, ...)
+    Debugger.LogWarning("{0} \n {1}", "[ <color=#FFFF00>" .. WriteF(fmtString, ...) .. " </color>]", debug.traceback())
+end
+
+function logError(fmtString, ...)
+    local stack = "[ " .. debug.traceback() .. " ]"
+    Debugger.LogError("{0} \n {1}", "[ <color=#FF0000>" .. WriteF(fmtString, ...) .. " </color>]", debug.traceback())
 end

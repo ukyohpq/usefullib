@@ -8,10 +8,14 @@
 local Array = class("Array")
 local arrLenMap = {}
 setmetatable(arrLenMap, {__mode = "k"})
+---increaseLen
+---@param self Array
 local function increaseLen(self)
     arrLenMap[self] = arrLenMap[self] + 1
 end
 
+---reduceLen
+---@param self Array
 local function reduceLen(self)
     arrLenMap[self] = arrLenMap[self] - 1
 end

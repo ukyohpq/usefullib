@@ -1,76 +1,52 @@
-local Notification = class("puremvc.patterns.observer.Notification")
+---@class Notification
+---@field name string
+---@field body table
+---@field type string
+Notification = class("puremvc.patterns.observer.Notification")
 
-local private = {}
-
-
----------------------------
---@param
---@return
+---ctor
+---@param name string
+---@param body table
+---@param type string
 function Notification:ctor(name, body, type)
-	self[private] = {
-	   _name = name,
-	   _body = body,
-	   _type = type
-	}
+	self.name = name
+	self.body = body
+	self.type = type
 end
 
-
----------------------------
---@param
---@return
 function Notification:getName()
-	return self[private]._name
+	return self.name
 end
 
-
----------------------------
---@param
---@return
 function Notification:setBody(body)
-	self[private]._body = body
+	self.body = body
 end
 
-
----------------------------
---@param
---@return
 function Notification:getBody()
-	return self[private]._body
+	return self.body
 end
 
-
----------------------------
---@param
---@return
 function Notification:setType(type)
-	self[private]._type = type
+	self.type = type
 end
 
-
----------------------------
---@param
---@return
 function Notification:getType()
-	return self[private]._type
+	return self.type
 end
 
-
----------------------------
---@param
---@return
 function Notification:toString()
 	local msg = "Notification Name: " .. self:getName()
-    if self[private]._body == nil then
+    if self.body == nil then
 	   msg = msg .. "\nBody:nil"
 	else
-	   msg = msg .. "\nBody:" .. tostring(self[private]._body)
---	   msg = msg .. "\nBody:" .. self[private]._body:toString()
+	   msg = msg .. "\nBody:" .. tostring(self.body)
+--	   msg = msg .. "\nBody:" .. self.body:toString()
 	end
 	
-    if self[private]._type == nil then
+    if self.type == nil then
 	   msg = msg .. "\nType:nil"
 	else
-	   msg = msg .. "\nType:" .. self[private]._type
+	   msg = msg .. "\nType:" .. self.type
 	end
 end
 

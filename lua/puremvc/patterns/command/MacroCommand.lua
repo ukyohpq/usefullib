@@ -1,35 +1,23 @@
-local MacroCommand = class("puremvc.patterns.command.MacroCommand", require("puremvc.patterns.observer.Notifier"))
-local private = {}
-local super = MacroCommand.super
-local function initializeMacroCommand(self)
+local super = Notifier
+---@class MacroCommand:Notifier
+MacroCommand = class("puremvc.patterns.command.MacroCommand", super)
+function MacroCommand:initializeMacroCommand()
 	
 end
----------------------------
---@param
---@return
+
 function MacroCommand:ctor()
     super.ctor(self)
-	self[private] = {
-	   _subCommands = {}
-	}
-    initializeMacroCommand(self)
+	self.subCommands = {}
+    self:initializeMacroCommand()
 end
 
-
----------------------------
---@param
---@return
 function MacroCommand:addSubCommand(commandClassRef)
-    local table = self[private]._subCommands
+    local table = self.subCommands
 	table[#table + 1] = commandClassRef
 end
 
-
----------------------------
---@param
---@return
 function MacroCommand:execute(notification)
-    local tb = self[private]._subCommands
+    local tb = self.subCommands
 	while #tb do
 		local commandClassRef = table.remove(tb, tb[#tb])
 		local commandInstance = commandClassRef.new()
